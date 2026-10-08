@@ -1,0 +1,13 @@
+{
+  "name": "lab1-ssg",
+  "private": true,
+  "version": "1.0.0",
+  "description": "实验一 任务三：Node 构建脚本静态生成（SSG），零运行时依赖",
+  "main": "build-ssg.js",
+  "scripts": {
+    "build": "node build-ssg.js"
+  },
+  "engines": {
+    "node": ">=20"
+  }
+}

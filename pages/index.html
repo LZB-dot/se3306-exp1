@@ -1,0 +1,87 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>实验一 · CSR / SSR / SSG 渲染对比</title>
+    <style>
+      :root {
+        --bg: #f7f8fa;
+        --card: #ffffff;
+        --text: #1f2328;
+        --muted: #6b7280;
+        --border: #e5e7eb;
+        --brand: #2563eb;
+      }
+      * { box-sizing: border-box; }
+      body {
+        margin: 0;
+        padding: 40px 16px;
+        background: var(--bg);
+        color: var(--text);
+        font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', 'Microsoft YaHei', sans-serif;
+        line-height: 1.6;
+      }
+      .wrap { max-width: 680px; margin: 0 auto; }
+      h1 { font-size: 24px; margin: 0 0 4px; }
+      .sub { color: var(--muted); font-size: 14px; margin: 0 0 24px; }
+      .card {
+        display: block;
+        background: var(--card);
+        border: 1px solid var(--border);
+        border-radius: 10px;
+        padding: 16px 18px;
+        margin-bottom: 14px;
+        text-decoration: none;
+        color: inherit;
+      }
+      .card:hover { border-color: var(--brand); }
+      .card h2 { font-size: 17px; margin: 0 0 4px; color: var(--brand); }
+      .card p { margin: 0; color: var(--muted); font-size: 14px; }
+      .tag {
+        display: inline-block;
+        padding: 2px 8px;
+        border-radius: 999px;
+        background: #eef2ff;
+        color: var(--brand);
+        font-size: 12px;
+        margin-right: 8px;
+      }
+      .note {
+        margin-top: 24px;
+        font-size: 13px;
+        color: var(--muted);
+        border-top: 1px solid var(--border);
+        padding-top: 14px;
+      }
+      code { background: #eef2f7; padding: 1px 5px; border-radius: 4px; font-size: 12px; }
+    </style>
+  </head>
+  <body>
+    <div class="wrap">
+      <h1>实验一 · 渲染模式实验室</h1>
+      <p class="sub">CSR / SSR / SSG 渲染对比 · SE3306 · 李泽滨 2024034743037</p>
+
+      <a class="card" href="./csr/">
+        <h2>任务一 · CSR</h2>
+        <p><span class="tag">Vite</span>客户端渲染：右键查看源代码，正文为空 —— 这就是 CSR 的空壳原理。</p>
+      </a>
+
+      <a class="card" href="./ssg/">
+        <h2>任务三 · SSG</h2>
+        <p><span class="tag">Node 构建脚本</span>构建期生成静态 HTML：页面底部的构建时间反复刷新也不会变化。</p>
+      </a>
+
+      <div class="card">
+        <h2>任务二 · SSR</h2>
+        <p>
+          <span class="tag">Express</span>依赖常驻 Node 服务才能实时生成 HTML，静态托管无法部署，
+          请在本地 <code>cd lab1-ssr &amp;&amp; node server.js</code> 后访问 <code>http://localhost:3000</code>，
+          或使用云托管（启动命令 <code>node server.js</code>）。
+        </p>
+      </div>
+
+      <p class="note">本页面及 csr/、ssg/ 两个静态产物均由 GitHub Actions 自动构建，每次 push 到 main 分支后自动更新。</p>
+    </div>
+  </body>
+</html>

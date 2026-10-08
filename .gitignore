@@ -1,0 +1,24 @@
+# 依赖
+node_modules/
+.pnpm-store/
+
+# 构建产物（lab1-csr/dist、lab1-ssg/dist 均由构建生成，不入库）
+dist/
+dist-ssr/
+
+# 日志
+logs/
+*.log
+npm-debug.log*
+pnpm-debug.log*
+
+# 编辑器与系统
+.vscode/
+.idea/
+.DS_Store
+Thumbs.db
+
+# 本地环境变量
+.env
+.env.local
+.env.*.local

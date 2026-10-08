@@ -1,0 +1,78 @@
+name: Deploy CSR & SSG to GitHub Pages
+
+# 触发时机：推送到 main 分支，或在 Actions 面板手动触发
+on:
+  push:
+    branches: [main]
+  workflow_dispatch:
+
+# GitHub Pages 部署所需的最小权限
+permissions:
+  contents: read
+  pages: write
+  id-token: write
+
+# 同一时间只允许一个部署任务，排队而非互相打断
+concurrency:
+  group: pages
+  cancel-in-progress: false
+
+jobs:
+  build:
+    name: 构建 CSR / SSG 静态产物
+    runs-on: ubuntu-latest
+    steps:
+      - name: 检出代码
+        uses: actions/checkout@v4
+
+      - name: 安装 pnpm
+        uses: pnpm/action-setup@v4
+        with:
+          version: 9
+
+      - name: 安装 Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: 20
+
+      - name: 构建任务一 CSR（Vite）
+        working-directory: lab1-csr
+        run: |
+          pnpm install --no-frozen-lockfile
+          GH_PAGES_BASE=/se3306-exp1/csr/ pnpm run build
+
+      - name: 构建任务三 SSG（Node 构建脚本，无第三方依赖）
+        working-directory: lab1-ssg
+        run: node build-ssg.js
+
+      - name: 组装 Pages 发布目录
+        run: |
+          mkdir -p site/csr site/ssg
+          cp -r lab1-csr/dist/. site/csr/
+          cp -r lab1-ssg/dist/. site/ssg/
+          cp pages/index.html site/index.html
+          touch site/.nojekyll
+          echo "--- 发布目录结构 ---"
+          find site -maxdepth 2 -type f | sort
+
+      - name: 配置 Pages
+        uses: actions/configure-pages@v5
+
+      - name: 上传产物
+        uses: actions/upload-pages-artifact@v3
+        with:
+          path: site
+
+  deploy:
+    name: 部署到 GitHub Pages
+    needs: build
+    runs-on: ubuntu-latest
+    environment:
+      name: github-pages
+      url: ${{ steps.deployment.outputs.page_url }}
+    steps:
+      - id: deployment
+        uses: actions/deploy-pages@v4
+
+# 任务二 SSR 依赖常驻 Node 进程，无静态产物，不在本工作流范围内。
+# 如需上线，可把 lab1-ssr 整体上传到云托管（启动命令：node server.js）。
