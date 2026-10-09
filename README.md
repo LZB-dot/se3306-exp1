@@ -203,6 +203,14 @@ Lighthouse 记录（3 轮中位数）：
 > 三个模式的性能分都是 100，原因是本页体积极小（不到 3 KB），远没触及 Lighthouse 的扣分阈值。真正能区分三者的是 **FCP / LCP**（CSR 明显更慢），而**不是总分**——只看分数会得出"三种模式一样好"的错误结论。
 > 原始报告：`lighthouse/multi/{csr,ssg,ssr}-r{1,2,3}.json`，可直接打开 `task4-*-report.html` 查看图形化结果。
 
+任务四自检截图（Lighthouse 报告，含性能分数与 FCP / LCP / TBT / CLS 四项）：
+
+| 截图 | 内容 |
+| --- | --- |
+| `docs/screenshots/task4-01-csr.png` | CSR 的 Lighthouse 报告：分数 100，FCP 0.8 s、LCP 0.9 s、TBT 0 ms、CLS 0 |
+| `docs/screenshots/task4-02-ssg.png` | SSG 的 Lighthouse 报告：分数 100，FCP 0.6 s、LCP 0.8 s、TBT 0 ms、CLS 0 |
+| `docs/screenshots/task4-03-ssr.png` | SSR 的 Lighthouse 报告：分数 100，FCP 0.6 s、LCP 0.8 s、TBT 0 ms、CLS 0 |
+
 选做观察（PageSpeed Insights，<https://pagespeed.web.dev>）：把部署后的 CSR / SSG 地址丢进去可以直接看 LCP、INP、CLS 三项得分；本次两个页面体量太小，区分度同样不高。
 
 ## 五、项目提交与部署
