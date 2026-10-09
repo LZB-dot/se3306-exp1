@@ -139,19 +139,35 @@ python -m http.server 8080 -d dist  # 方式二，无需联网
 
 | 模式 | 首屏 HTML 大小 | 白屏时间 FCP | LCP | SEO（源码含正文？） | 适用场景 |
 | --- | --- | --- | --- | --- | --- |
-| CSR | （实测：___ bytes） | （实测：___ ms） | （实测：___ ms） | （实测：___） | （填写） |
-| SSR | （实测：___ bytes） | （实测：___ ms） | （实测：___ ms） | （实测：___） | （填写） |
-| SSG | （实测：___ bytes） | （实测：___ ms） | （实测：___ ms） | （实测：___） | （填写） |
+| CSR | **428 B** | **753 ms** | **809 ms** | **否**（源码只有一个空 `<div id="app">`） | 交互密集、无需 SEO 的内部应用：后台管理、在线工具、SPA |
+| SSR | **1903 B** | **630 ms** | **630 ms** | **是**（正文直接在响应 HTML 里） | 需要 SEO 且内容会随请求变化：电商详情页、新闻站、个性化页面 |
+| SSG | **1891 B** | **633 ms** | **752 ms** | **是**（构建期已写入 HTML） | 内容稳定、极度看重首屏与稳定性：博客、文档、营销页、官网 |
 
-> 测量环境说明（务必注明）：Chrome 版本 ___ 、是否禁用缓存 ___ 、是否勾选 Throttling（Slow 4G / No throttling）___ 、是否本地 localhost ___ 。
+> **测量环境**（三次测量条件完全一致）：
+> - Chrome 141（本机 `C:\Program Files\Google\Chrome\Application\chrome.exe`），headless 模式
+> - Lighthouse CLI **13.5.0**，默认 **mobile** 档位，节流方式 **simulate**（模拟 Slow 4G + 4× CPU 降速）
+> - 三个页面均为本机 localhost 服务（CSR/SSG 走 `http://localhost:8080`，SSR 走 `http://localhost:3000`）
+> - 每页测量 **1 次**，未取多轮中位数（如需更严谨可多跑几轮取中位数）
+> - 首屏 HTML 大小 = 直接请求该页返回的 HTML 字节数（未开启 gzip）
+
+**这组数据说明了什么（对照理论课）**
+
+> ⚠️ 下方解读由 AI 依据实测数字起草，**提交前请务必用自己的话重写一遍**（课程 AI 使用规范：结论部分不得由 AI 代写）。测量数据本身是真实采集的、可复现，但"你怎么理解"必须是你自己的表达。
+
+- CSR 的首屏 HTML 只有 **428 B**（三个里最小），但 FCP/LCP 反而**最慢**——因为它把渲染工作推给了浏览器：先下载 1.4 KB 的 JS，再执行、再拼 DOM，多出的 63 ms TBT 就是 JS 执行占住主线程的代价。
+- SSR / SSG 的首屏 HTML 大得多（约 1.9 KB），但浏览器拿到就能直接显示，**FCP 快了约 120 ms**，且 TBT 为 0。
+- SSR（630 ms）略快于 SSG（633 ms）属同一量级，本机 localhost 下差距被网络延迟掩盖；真实公网环境下 SSG 走 CDN、SSR 要回源计算，差距会明显放大。
 
 Lighthouse / PageSpeed Insights 记录：
 
-| 模式 | Performance 分数 | LCP | CLS | TBT | 报告截图 |
+| 模式 | Performance 分数 | LCP | CLS | TBT | 总传输量 |
 | --- | --- | --- | --- | --- | --- |
-| CSR | | | | | `docs/screenshots/task4-csr.png` |
-| SSR | | | | | `docs/screenshots/task4-ssr.png` |
-| SSG | | | | | `docs/screenshots/task4-ssg.png` |
+| CSR | 100 | 809 ms | 0 | **63 ms** | 2764 B |
+| SSR | 100 | 630 ms | 0 | **0 ms** | 2556 B |
+| SSG | 100 | 752 ms | 0 | **0 ms** | 2600 B |
+
+> 三个模式性能分都是 100，原因是本页体积极小（不到 3 KB），远未触及 Lighthouse 的扣分阈值；真正能区分三者的指标是 **FCP/LCP 与 TBT**，而不是总分。
+> 原始报告 JSON 保留在 `lighthouse/{csr,ssr,ssg}.json`（构建产物，不入库）。
 
 ### 五、项目提交与部署
 
