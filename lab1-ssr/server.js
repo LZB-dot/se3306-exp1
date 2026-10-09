@@ -10,7 +10,7 @@ const posts = Array.from({ length: 10 }, (_, i) => ({
   body: `这是第 ${i + 1} 篇文章的正文内容……`
 }));
 
-/** 统一转义：服务端拼接 HTML 时必须转义，否则存在 XSS（AI 代码审查 ⑤ 安全） */
+/** 统一转义：服务端拼接 HTML 时必须转义，否则存在 XSS 隐患 */
 function escapeHtml(str) {
   return String(str).replace(/[&<>"']/g, (char) => ({
     '&': '&amp;',
@@ -37,6 +37,7 @@ app.get('/', (req, res) => {
     article h2 { font-size: 17px; margin: 0 0 6px; }
     article p { margin: 0; color: #6b7280; font-size: 14px; }
     .meta { color: #6b7280; font-size: 13px; margin-top: 16px; }
+    button { margin-top: 12px; padding: 6px 14px; font-size: 14px; cursor: pointer; }
   </style>
 </head>
 <body>
@@ -48,6 +49,8 @@ app.get('/', (req, res) => {
     )
     .join('')}
   <p class="meta">渲染模式：SSR ｜ 本次渲染时间：${escapeHtml(renderedAt.toLocaleString('zh-CN'))}（刷新会变化，证明每次请求都在服务器端重新生成）</p>
+  <!-- 选做：整页刷新，体会时代一「每次点击整个世界重来」 -->
+  <button onclick="location.reload()">刷新当前时间</button>
 </body>
 </html>`;
   res.send(html); // 服务端拼接完整 HTML

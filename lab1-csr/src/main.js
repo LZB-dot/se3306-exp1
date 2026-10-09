@@ -6,7 +6,7 @@ const posts = Array.from({ length: 10 }, (_, i) => ({
   body: `这是第 ${i + 1} 篇文章的正文内容……`
 }));
 
-/** 统一转义：避免用 innerHTML 拼接时被注入 HTML/脚本（AI 代码审查 ⑤ 安全） */
+/** 统一转义：避免用 innerHTML 拼接时被注入 HTML/脚本 */
 function escapeHtml(str) {
   return String(str).replace(/[&<>"']/g, (char) => ({
     '&': '&amp;',
