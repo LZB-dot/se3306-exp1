@@ -70,7 +70,9 @@
 | 6 | `lab1-ssg/package.json` | 删除 AI 初版自行添加的 `preview` 脚本（`node preview.js`） | 任务书明确预览用 `npx serve dist` / `python -m http.server`，不应引入任务书之外的自定义脚本 |
 | 7 | 仓库结构 | 删除误建的 `lab1-csr/public/behavior-note.md` | 该文件并非任务要求的产物，属于生成过程中的冗余文件 |
 | 8 | `lab1-ssr/Dockerfile` | 新增容器构建文件（`node:20-alpine`，端口 3000） | 云托管从代码包部署需要明确的构建入口；`server.js` 读 `process.env.PORT`，与容器注入端口一致，避免端口写死导致部署后 502 |
-| 9 | 部署策略 | 主链接从 GitHub Pages 改为 EdgeOne Pages / 帽子云，Pages 保留为备用 | 提交要求是「部署后能直接打开的完整链接」；国内直连 `github.io` 存在 DNS 污染与跨境链路超时，用国内静态托管才满足验收条件（依据：多篇 2026 年网络现状资料） |
+| 9 | 部署策略 | 主链接从 GitHub Pages 改为 **CloudBase 静态网站托管**（国内节点），Pages 保留为备用 | 提交要求是「部署后能直接打开的完整链接」；实测国内直连 `github.io` 时 10 轮探测约半数请求超时/断连，需用国内静态托管才满足验收条件 |
+| 10 | 部署平台选型 | 先尝试 EdgeOne Pages，两个站点（含"已上线"状态）均返回 **401**，且控制台标注「全局可用（不含中国大陆）」，据此判定不可用并放弃 | 匿名访问一律被鉴权拦截（响应 `server: edgeone makers`），带 `eo_token` 的链接同样 401；覆盖范围不含中国大陆也不满足验收条件 |
+| 11 | 部署执行方式 | 由本人创建腾讯云 API 密钥（SecretId/SecretKey）交给 Agent，Agent 用 CloudBase CLI 完成环境确认、静态托管开通、产物上传与验证；**密钥未写入任何文件，用后由本人在控制台禁用** | 密钥属主账号全权凭证，责任边界必须写清：Agent 只持有并在单次命令中使用，不落盘、不进仓库 |
 
 ### 2.3 未能自证、需进一步验证的点
 

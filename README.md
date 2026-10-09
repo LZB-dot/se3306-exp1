@@ -8,8 +8,8 @@
 | 学号 | 2024034743037 |
 | 完成日期 | 2026-12-12 |
 | 代码仓库 | <https://github.com/LZB-dot/se3306-exp1>（公开仓库） |
-| CSR 部署地址 | 主：`（EdgeOne Pages / 帽子云，待部署后填写）`　备：`https://LZB-dot.github.io/se3306-exp1/csr/` |
-| SSG 部署地址 | 主：`（EdgeOne Pages / 帽子云，待部署后填写）`　备：`https://LZB-dot.github.io/se3306-exp1/ssg/` |
+| CSR 部署地址 | 主：<https://se3306-d6go5cz7kca0abeee-1502509077.tcloudbaseapp.com/csr/>（CloudBase 静态托管，国内节点）　备：`https://LZB-dot.github.io/se3306-exp1/csr/` |
+| SSG 部署地址 | 主：<https://se3306-d6go5cz7kca0abeee-1502509077.tcloudbaseapp.com/ssg/>（CloudBase 静态托管，国内节点）　备：`https://LZB-dot.github.io/se3306-exp1/ssg/` |
 | SSR 部署地址 | `（CloudBase 云托管，待部署后填写）`；本地 `node server.js` → `http://localhost:3000` |
 
 ---
@@ -155,18 +155,18 @@ Lighthouse / PageSpeed Insights 记录：
 
 ### 五、项目提交与部署
 
-- CSR 与 SSG 均可产出静态文件，构建后不再需要 Node 服务，已由 `.github/workflows/deploy.yml` 自动构建并部署到 GitHub Pages；同时用同一份 `dist/` 产物在 EdgeOne Pages / 帽子云 建了国内站点，**提交以国内链接为准**（老师验收环境在国内，直连 `github.io` 存在 DNS 污染与跨境链路超时风险）。
-- SSR 没有静态产物，依赖常驻 Node 进程实时生成 HTML，静态托管无法部署，按文档建议走 CloudBase 云托管：上传 `lab1-ssr/` 源码或代码包，启动命令 `node server.js`，容器端口 3000。
+- CSR 与 SSG 均可产出静态文件，构建后不再需要 Node 服务，用 CloudBase 静态网站托管（`tcb hosting deploy`）部署到国内节点；同时在 `.github/workflows/deploy.yml` 中自动构建并发布到 GitHub Pages 作为备用。三个任务分开部署、各测各的，互不干扰。
+- SSR 没有静态产物，依赖常驻 Node 进程实时生成 HTML，静态托管无法部署，走 CloudBase 云托管：上传 `lab1-ssr/` 源码或代码包，启动命令 `node server.js`，容器端口 3000。
 
-| 产物 | 部署方式 | 访问地址 |
-| --- | --- | --- |
-| `lab1-csr/dist` | EdgeOne Pages / 帽子云（主） | `（待填写）` |
-| `lab1-csr/dist` | GitHub Actions → Pages `/csr/`（备） | `https://LZB-dot.github.io/se3306-exp1/csr/` |
-| `lab1-ssg/dist` | EdgeOne Pages / 帽子云（主） | `（待填写）` |
-| `lab1-ssg/dist` | GitHub Actions → Pages `/ssg/`（备） | `https://LZB-dot.github.io/se3306-exp1/ssg/` |
-| `lab1-ssr` | CloudBase 云托管（Dockerfile 构建，端口 3000） | `（待填写）` |
+| 产物 | 部署方式 | 访问地址 | 实测 |
+| --- | --- | --- | --- |
+| `lab1-csr/dist` | CloudBase 静态托管 `/csr/`（主，国内节点） | <https://se3306-d6go5cz7kca0abeee-1502509077.tcloudbaseapp.com/csr/> | 200；源码无正文、仅空 `div#app` |
+| `lab1-csr/dist` | GitHub Actions → Pages `/csr/`（备） | <https://LZB-dot.github.io/se3306-exp1/csr/> | 200；国内直连约半数请求超时 |
+| `lab1-ssg/dist` | CloudBase 静态托管 `/ssg/`（主，国内节点） | <https://se3306-d6go5cz7kca0abeee-1502509077.tcloudbaseapp.com/ssg/> | 200；源码含正文 |
+| `lab1-ssg/dist` | GitHub Actions → Pages `/ssg/`（备） | <https://LZB-dot.github.io/se3306-exp1/ssg/> | 200；同上 |
+| `lab1-ssr` | CloudBase 云托管（Dockerfile 构建，端口 3000） | `（待部署后填写）` | 本地已验证：每次请求返回完整 HTML，响应约 1903 B |
 
-> 部署时使用的构建产物与代码包保存在本地 `deploy/` 目录：`se3306-exp1-csr.zip`、`se3306-exp1-ssg.zip`、`se3306-exp1-ssr.zip`、`se3306-exp1-pages-index.zip`（这些是构建产物，按 `.gitignore` 不入库）。
+> 部署走的是腾讯云 CloudBase：静态托管用 CLI 上传产物：`tcb hosting deploy ./csr csr -e <环境ID>`（SSG 同理）；SSR 用云托管服务运行容器。本地构建产物与代码包保存在 `deploy/` 目录（`se3306-exp1-csr.zip`、`se3306-exp1-ssg.zip`、`se3306-exp1-ssr.zip`、`上传用-CloudBase/`），这些是构建产物，按 `.gitignore` 不入库。
 
 ## 六、必答题
 
